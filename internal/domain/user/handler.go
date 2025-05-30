@@ -16,7 +16,7 @@ func NewUserHandler(userService Service) *Handler {
 
 func (h *Handler) SyncUsers(c *gin.Context) {
 	// manggil service
-	if err := h.UserService.SyncUsers(); err != nil {
+	if err := h.UserService.ServiceSyncUsers(); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"massage": "err bro",
 		})
@@ -29,7 +29,7 @@ func (h *Handler) SyncUsers(c *gin.Context) {
 }
 
 func (h *Handler) GetAllUsers(c *gin.Context) {
-	users, err := h.UserService.GetAllUsers()
+	users, err := h.UserService.ServiceGetAllUsers()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"massage": "err bro",
