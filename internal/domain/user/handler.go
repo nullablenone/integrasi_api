@@ -15,9 +15,9 @@ func NewUserHandler(userService Service) *Handler {
 	return &Handler{UserService: userService}
 }
 
-func (h *Handler) GetAllUsers(c *gin.Context) {
+func (h *Handler) SyncUsers(c *gin.Context) {
 	// manggil service
-	users, err := h.UserService.GetAllUsersService()
+	users, err := h.UserService.SyncUsers()
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{

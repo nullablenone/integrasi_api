@@ -8,7 +8,7 @@ import (
 )
 
 type JSONPlaceholderClientInterface interface {
-	FetchUsers() ([]User, error)
+	SyncUsers() ([]User, error)
 }
 
 type JSONPlaceholderClient struct {
@@ -25,7 +25,7 @@ func NewJSONPlaceholderClient(baseURL string) JSONPlaceholderClientInterface {
 	}
 }
 
-func (c *JSONPlaceholderClient) FetchUsers() ([]User, error) {
+func (c *JSONPlaceholderClient) SyncUsers() ([]User, error) {
 	resp, err := c.httpClient.Get(c.baseURL + "/users")
 	if err != nil {
 		return nil, err

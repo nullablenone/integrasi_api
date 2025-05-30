@@ -8,7 +8,7 @@ import (
 
 func SetupRoutes(userHandler *user.Handler) *gin.Engine {
 	router := gin.Default()
-	router.GET("/get-users", userHandler.GetAllUsers)
+	router.POST("/sync/users", userHandler.SyncUsers)
 
 	return router
 
