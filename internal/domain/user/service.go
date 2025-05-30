@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"integrasi_api/constants"
 	"integrasi_api/internal/integration/jsonplaceholder"
+	"integrasi_api/internal/kafka/producer"
 	"time"
 
 	"github.com/redis/go-redis/v9"
@@ -14,6 +15,7 @@ import (
 type Service interface {
 	ServiceSyncUsers() error
 	ServiceGetAllUsers() ([]User, error)
+	ProducerUsersSend() error
 }
 
 type service struct {
@@ -21,10 +23,17 @@ type service struct {
 	Repo                Repository
 	Redis               *redis.Client
 	Ctx                 context.Context
+	Kafka               producer.KafkaProducerInterface
 }
 
-func NewUserService(exUserService jsonplaceholder.ExternalUserService, repo Repository, redis *redis.Client, ctx context.Context) Service {
-	return &service{ExternalUserService: exUserService, Repo: repo, Redis: redis, Ctx: ctx}
+func NewUserService(exUserService jsonplaceholder.ExternalUserService, repo Repository, redis *redis.Client, ctx context.Context, kafka producer.KafkaProducerInterface) Service {
+	return &service{
+		ExternalUserService: exUserService,
+		Repo:                repo,
+		Redis:               redis,
+		Ctx:                 ctx,
+		Kafka:               kafka,
+	}
 }
 
 func (s *service) ServiceSyncUsers() error {
@@ -87,4 +96,24 @@ func (s *service) ServiceGetAllUsers() ([]User, error) {
 
 	return users, nil
 
+}
+
+func (s *service) ProducerUsersSend() error {
+	users, err := s.Repo.GetAllUsers()
+	if err != nil {
+		return fmt.Errorf("gagal mengambil data user: %w", err)
+	}
+
+	userData, err := json.Marshal(users)
+	if err != nil {
+		return fmt.Errorf("gagal meng-encode data user ke JSON: %w", err)
+	}
+
+	// Kirim data JSON ke Kafka
+	err = s.Kafka.SendService("users", userData)
+	if err != nil {
+		return fmt.Errorf("gagal mengirim pesan ke Kafka: %w", err)
+	}
+
+	return nil
 }

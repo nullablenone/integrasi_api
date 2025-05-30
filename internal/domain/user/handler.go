@@ -42,3 +42,19 @@ func (h *Handler) GetAllUsers(c *gin.Context) {
 	})
 
 }
+
+func (h *Handler) ProducerUsersSend(c *gin.Context) {
+	// panggil service
+	err := h.UserService.ProducerUsersSend()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"massage": "gagal",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"massage": "berhasil",
+	})
+
+}

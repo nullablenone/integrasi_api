@@ -16,9 +16,9 @@ func ConnectRedis() *redis.Client {
 
 	// Tes koneksi sekali pake context.Background()
 	if _, err := rdb.Ping(context.Background()).Result(); err != nil {
-		log.Fatalf("Gagal connect ke Redis: %v", err)
+		log.Fatalf("Gagal terhubung ke Redis: %v", err)
 	}
 
-	log.Println("Redis connected successfully")
+	log.Println("Berhasil terhubung ke Redis")
 	return rdb
 }
