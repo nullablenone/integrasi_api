@@ -14,6 +14,7 @@ type ENV struct {
 	DBHost         string
 	DBPort         string
 	DBName         string
+
 	ExternalAPIURL string
 }
 
@@ -37,6 +38,7 @@ func LoadENV() {
 		DBHost:         os.Getenv("DB_HOST"),
 		DBPort:         os.Getenv("DB_PORT"),
 		DBName:         os.Getenv("DB_NAME"),
+		
 		ExternalAPIURL: os.Getenv("EXTERNAL_API_URL"),
 	}
 	

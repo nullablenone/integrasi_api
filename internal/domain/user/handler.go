@@ -1,7 +1,6 @@
 package user
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -17,16 +16,29 @@ func NewUserHandler(userService Service) *Handler {
 
 func (h *Handler) SyncUsers(c *gin.Context) {
 	// manggil service
-	users, err := h.UserService.SyncUsers()
+	if err := h.UserService.SyncUsers(); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"massage": "err bro",
+		})
+		return
+	}
 
+	c.JSON(http.StatusOK, gin.H{
+		"massage": "berhasil",
+	})
+}
+
+func (h *Handler) GetAllUsers(c *gin.Context) {
+	users, err := h.UserService.GetAllUsers()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"massage": "err bro",
 		})
+		return
 	}
 
-	for _, u := range users {
-		fmt.Println(u.Name)
-	}
+	c.JSON(http.StatusOK, gin.H{
+		"data": users,
+	})
 
 }
